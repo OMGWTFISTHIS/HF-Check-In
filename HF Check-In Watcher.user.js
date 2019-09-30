@@ -1,0 +1,152 @@
+// ==UserScript==
+// @name       HF Check-In Watcher
+// @author xadamxk
+// @namespace  https://github.com/xadamxk/HF-Scripts
+// @version    1.2.5
+// @description  Alerts users of new HF Check-Ins (checks on /usercp.php)
+// @require https://code.jquery.com/jquery-3.1.1.js
+// @match      *://hackforums.net/usercp.php
+// @match      *://hackforums.net/showthread.php?tid=*
+// @copyright  2016+
+// @updateURL https://github.com/xadamxk/HF-Userscripts/releases/download/HFNN/HF.News.Notifier.user.js
+// @downloadURL https://github.com/xadamxk/HF-Userscripts/releases/download/HFNN/HF.News.Notifier.user.js
+// @iconURL https://raw.githubusercontent.com/xadamxk/HF-Userscripts/master/scripticon.jpg
+// @grant       GM_getValue
+// @grant       GM_setValue
+// ==/UserScript==
+// ------------------------------ Change Log ----------------------------
+// version 1.0.0: Initial Release
+// ------------------------------ Dev Notes -----------------------------
+//
+// ------------------------------ SETTINGS ------------------------------
+// User's threads: Checks what user's threads to watch
+var sectionURL = "https://hackforums.net/search.php?action=finduserthreads&uid=3583467";
+// Filter Title: Filter unread thread results by keyword
+var titleFilterBool = true; // (true = ON, false = OFF)
+var titleFilter = "Check-In"; // seperate keywords by commas ex."PP,BTC"
+// Debug: Show console.log statements for debugging purposes
+var debug = true;
+// Alert Note: Note at bottom of alert (note text goes between spans)
+var alertNote = "<span id='alertCSS'></span>";
+var alertNoteCSS = "<style>#alertCSS{color:red}</style>";
+// ------------------------------ ON PAGE LOAD ------------------------------
+if (window.location.href == "https://hackforums.net/usercp.php") {
+    // Cookie variables
+    var threadTitles = "";
+    var showAlert = true;
+    // Grab most recent Checkin thread title(s)
+    $.ajax({
+        url: sectionURL,
+        cache: false,
+        success: function(response) {
+            // Static Variables
+            var CheckinThreadName;
+            var threadLinkArray = [];
+            var threadTitleArray = [];
+            var forumTitle;
+            var count = 0;
+            // Forum Title
+            forumTitle = "Check-In";
+            // Find correct table
+            var tableArray = $(response).find(".tborder").toArray();
+            var forumTable;
+            for (i = 0; i < tableArray.length; i++) {
+                if (debug && !$(tableArray[i]).find("tbody").find("tr").find("td").find("div:eq(1)").find("strong").text())
+                    console.log("Table Index " + i + ": " + $(tableArray[i]).find("tbody").find("tr").find("td").find("div:eq(1)").find("strong").text());
+                // Select correct table
+                forumTable = tableArray[i];
+            }
+            if (debug)
+                console.log(forumTable);
+            // Break table into rows
+            rows = $(forumTable).find("tbody tr").toArray();
+            // Column with thread title & link
+            // Loop through table rows
+            var column2 = 'td:eq(1) div span a:eq(1)';
+            for (i = 0; i < rows.length; i++) {
+                // Debug
+                if (debug)
+                    console.log("Span SRC: " + $(rows[i]).find('td:eq(1)').find('div').find('span').find('a:eq(1)'));
+                // Filter threads by new
+                temp = $(rows[i]).find('td:eq(1)').find('td:eq(1)').find('div').find('span').find('a:eq(1)').find('innerHTML');
+                if (temp !== undefined) {
+                    threadLinkArray[count] = $(rows[i]).find(column2).attr('href');
+                    threadTitleArray[count] = $(rows[i]).find(column2).text().replace(/["',]/g, ""); // Remove chars("',) from string
+                    count++;
+                }
+            }
+
+            // Alert HTML Heading
+            CheckinThreadName = "<strong class='.thead'><u>New '<a href='" + sectionURL + "'>" + forumTitle + "</a>' Thread(s):</u></strong><br/>";
+            var foundNewFilter = false;
+            // Alert HTML Body
+            for (i = 0; i < threadLinkArray.length; i++) {
+                // Title filter
+                if (titleFilterBool) {
+                    // For loop for filters
+                    var titleFilterArray = titleFilter.split(',');
+                    for (j = 0; j < titleFilterArray.length; j++) {
+                        if (threadTitleArray[i].includes(titleFilterArray[j])) {
+                            foundNewFilter = true;
+                            CheckinThreadName += "<a href='" + threadLinkArray[i] + "'>" + threadTitleArray[i] + "</a><br/>";
+                            // Cookie string
+                            threadTitles = threadTitles + threadTitleArray[i] + ",";
+                        }
+                    }
+                }
+                // No title filter
+                else {
+                    CheckinThreadName += "<a href='" + threadLinkArray[i] + "'>" + threadTitleArray[i] + "</a><br/>";
+                    // Cookie string
+                    threadTitles = threadTitles + threadTitleArray[i] + ",";
+                }
+            }
+            // Cookie logic
+            var addCookieAlert = "";
+            // Make cookie if doesn't already exist
+            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") === undefined)
+                document.cookie = 'HFNNCookie=';
+            // Debug Cookie and Current thread titles
+            if (debug) {
+                console.log("Cookie: '" + document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") +
+                    "'\nThread: '" + threadTitles + "'");
+                if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
+                    console.log("Titles Match: true");
+                else
+                    console.log("Titles Match: false");
+            }
+            // Cookie title matches (Hide alert)
+            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
+                showAlert = false;
+            // No match (Inject HTML to show alert)
+            else
+                addCookieAlert = "document.cookie = 'HFNNCookie=" + threadTitles + "'; $(\"Checkin_alert\").remove();";
+
+            // Alert notice html
+            var html = "<div class='pm_alert' id='Checkin_alert'><div class='float_right'><a href='javascript:closeAlert();'  title='Dismiss this notice'>" +
+                "<img src='https://hackforums.net/images/modern_bl/dismiss_notice.gif' style='cursor:pointer' alt='Dismiss this notice'  title='Dismiss'></a>" +
+                "</div><div></div></div><script>function closeAlert(){var confirmAlert = confirm('Dismiss alert? Doing so will hide it until new threads are found.');" +
+                " if(confirmAlert){" + addCookieAlert + "}}</script>";
+            // Some fancy string insertion
+            var substring = "</div><div>";
+            var position = html.indexOf(substring) + (substring).length;
+            CheckinThreadName += alertNote + alertNoteCSS;
+            html = [html.slice(0, position), CheckinThreadName, html.slice(position)].join('');
+            // If new threads (Filter and Found) => Append HTML
+            // Runs if titles don't match
+            if (showAlert) {
+                if (titleFilterBool && foundNewFilter)
+                    $(html).insertBefore("#content");
+                // If new threads (all) => Append HTML
+                if (!titleFilterBool)
+                    $(html).insertBefore("#content");
+            }
+            // Debug
+            if (debug) {
+                console.log("rows: " + rows.length);
+                console.log("New Threads Found: " + threadLinkArray.length);
+                console.log("Alert HTML: " + CheckinThreadName);
+            }
+        }
+    });
+}
