@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name       HF Check-In Watcher
-// @author xadamxk
-// @namespace  https://github.com/xadamxk/HF-Scripts
-// @version    1.0.0
-// @description  Alerts users of new HF Check-Ins (checks on /usercp.php)
-// @require https://code.jquery.com/jquery-3.1.1.js
-// @match      *://hackforums.net/usercp.php
-// @match      *://hackforums.net/showthread.php?tid=*
-// @copyright  2016+
-// @updateURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
+// @name        HF Check-In Watcher
+// @author      +mK
+// @namespace   https://github.com/OMGWTFISTHIS
+// @version     1.0.0
+// @description Alerts users of new HF Check-Ins (checks on /usercp.php)
+// @require     https://code.jquery.com/jquery-3.1.1.js
+// @match       *://hackforums.net/usercp.php
+// @match       *://hackforums.net/showthread.php?tid=*
+// @copyright   2016+
+// @updateURL   https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
 // @downloadURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
-// @iconURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/Check-In.png
+// @iconURL     https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/Check-In.png
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
