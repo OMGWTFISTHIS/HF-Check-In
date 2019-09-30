@@ -10,7 +10,7 @@
 // @copyright  2016+
 // @updateURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
 // @downloadURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
-// @iconURL https://raw.githubusercontent.com/xadamxk/HF-Userscripts/master/scripticon.jpg
+// @iconURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/Check-In.png
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
