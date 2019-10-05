@@ -26,7 +26,7 @@ var sectionURL = "https://hackforums.net/search.php?action=finduserthreads&uid=3
 var titleFilterBool = true; // (true = ON, false = OFF)
 var titleFilter = "Check-In"; // seperate keywords by commas ex."PP,BTC"
 // Debug: Show console.log statements for debugging purposes
-var debug = true;
+var debug = false;
 // Alert Note: Note at bottom of alert (note text goes between spans)
 var alertNote = "<span id='alertCSS'></span>";
 var alertNoteCSS = "<style>#alertCSS{color:red}</style>";
