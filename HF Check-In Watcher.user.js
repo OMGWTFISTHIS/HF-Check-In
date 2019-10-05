@@ -21,7 +21,7 @@
 //
 // ------------------------------ SETTINGS ------------------------------
 // User's threads: Checks what user's threads to watch
-var sectionURL = "https://hackforums.net/search.php?action=finduserthreads&uid=3583467";
+var ThreadsURL = "https://hackforums.net/search.php?action=finduserthreads&uid=3583467";
 // Filter Title: Filter unread thread results by keyword
 var titleFilterBool = true; // (true = ON, false = OFF)
 var titleFilter = "Check-In"; // seperate keywords by commas ex."PP,BTC"
@@ -37,7 +37,7 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
     var showAlert = true;
     // Grab most recent Checkin thread title(s)
     $.ajax({
-        url: sectionURL,
+        url: ThreadsURL,
         cache: false,
         success: function(response) {
             // Static Variables
@@ -65,14 +65,16 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
             // Column with thread title & link
             // Loop through table rows
             var column2 = 'td:eq(1) div span a:eq(1)';
+            var column1 = 'td:eq(0) span';
             for (i = 0; i < rows.length; i++) {
                 // Debug
                 if (debug)
                     console.log("Span SRC: " + $(rows[i]).find('td:eq(1)').find('div').find('span').find('a:eq(1)'));
-                // Find new threads
+                // Find newewst thread
                 temp = $(rows[i]).find('td:eq(1)').find('td:eq(1)').find('div').find('span').find('a:eq(1)').find('innerHTML');
                 Dates = $(rows[i]).find(column2).text();
-                if (temp !== undefined  && (Dates.includes(Today))) {
+                Postedcheck = $(rows[i]).find(column1).attr('title');
+                if (temp !== undefined  && (Dates.includes(Today)) && (Postedcheck.includes('posts by you')) != true) {
                     threadLinkArray[count] = $(rows[i]).find(column2).attr('href');
                     threadTitleArray[count] = $(rows[i]).find(column2).text().replace(/["',]/g, ""); // Remove chars("',) from string
                     count++;
@@ -107,23 +109,23 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
             // Cookie logic
             var addCookieAlert = "";
             // Make cookie if doesn't already exist
-            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") === undefined)
-                document.cookie = 'HFNNCookie=';
+            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFCWCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") === undefined)
+                document.cookie = 'HFCWCookie=';
             // Debug Cookie and Current thread titles
             if (debug) {
-                console.log("Cookie: '" + document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") +
+                console.log("Cookie: '" + document.cookie.replace(/(?:(?:^|.*;\s*)HFCWCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") +
                     "'\nThread: '" + threadTitles + "'");
-                if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
+                if (document.cookie.replace(/(?:(?:^|.*;\s*)HFCWCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
                     console.log("Titles Match: true");
                 else
                     console.log("Titles Match: false");
             }
             // Cookie title matches (Hide alert)
-            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFNNCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
+            if (document.cookie.replace(/(?:(?:^|.*;\s*)HFCWCookie\s*\=\s*([^;]*).*$)|^.*$/, "$1") == threadTitles)
                 showAlert = false;
             // No match (Inject HTML to show alert)
             else
-                addCookieAlert = "document.cookie = 'HFNNCookie=" + threadTitles + "'; $(\"Checkin_alert\").remove();";
+                addCookieAlert = "document.cookie = 'HFCWCookie=" + threadTitles + "'; $(\"Checkin_alert\").remove();";
 
             // Alert notice html
             var html = "<div class='pm_alert' id='Checkin_alert'><div class='float_right'><a href='javascript:closeAlert();'  title='Dismiss this notice'>" +
