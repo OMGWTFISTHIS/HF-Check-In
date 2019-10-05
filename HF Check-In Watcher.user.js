@@ -5,6 +5,7 @@
 // @version     1.0.0
 // @description Alerts users of new HF Check-Ins (checks on /usercp.php)
 // @require     https://code.jquery.com/jquery-3.1.1.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js
 // @match       *://hackforums.net/usercp.php
 // @match       *://hackforums.net/showthread.php?tid=*
 // @copyright   2016+
@@ -41,6 +42,7 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
         success: function(response) {
             // Static Variables
             var CheckinThreadName;
+            var Today = moment().format('MMMM Do, YYYY').toString();
             var threadLinkArray = [];
             var threadTitleArray = [];
             var forumTitle;
@@ -67,9 +69,10 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
                 // Debug
                 if (debug)
                     console.log("Span SRC: " + $(rows[i]).find('td:eq(1)').find('div').find('span').find('a:eq(1)'));
-                // Filter threads by new
+                // Find new threads
                 temp = $(rows[i]).find('td:eq(1)').find('td:eq(1)').find('div').find('span').find('a:eq(1)').find('innerHTML');
-                if (temp !== undefined) {
+                Dates = $(rows[i]).find(column2).text();
+                if (temp !== undefined  && (Dates.includes(Today))) {
                     threadLinkArray[count] = $(rows[i]).find(column2).attr('href');
                     threadTitleArray[count] = $(rows[i]).find(column2).text().replace(/["',]/g, ""); // Remove chars("',) from string
                     count++;
@@ -77,7 +80,7 @@ if (window.location.href == "https://hackforums.net/usercp.php") {
             }
 
             // Alert HTML Heading
-            CheckinThreadName = "<strong class='.thead'><u>New '<a href='" + sectionURL + "'>" + forumTitle + "</a>' Thread(s):</u></strong><br/>";
+            CheckinThreadName = "<strong class='.thead'><u>New Check-In Thread:</u></strong><br/>";
             var foundNewFilter = false;
             // Alert HTML Body
             for (i = 0; i < threadLinkArray.length; i++) {
