@@ -39,7 +39,7 @@ var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
 // If cookie doesn't exist, create it
 if (document.cookie.indexOf("cookieTimer") == -1) {
     Cookies.set('cookieTimer', 'Timer', {
-        expires: inFifteenMinutes
+       expires: inFifteenMinutes
     });
     if (debug) {
         console.log("This is the first time we've checked in fifteen minutes. Setting cookie.");
@@ -88,7 +88,7 @@ if (document.cookie.indexOf("cookieTimer") == -1) {
                     temp = $(rows[i]).find('td:eq(1)').find('td:eq(1)').find('div').find('span').find('a:eq(1)').find('innerHTML');
                     Dates = $(rows[i]).find(column2).text();
                     Postedcheck = $(rows[i]).find(column1).attr('title');
-                    if (temp !== undefined && (Dates.includes(Today)) && (Postedcheck.includes('posts by you')) != true) {
+                    if (temp !== undefined && (Dates.includes(Today)) && Postedcheck.includes('posts by you') != true) {
                         threadLinkArray[count] = $(rows[i]).find(column2).attr('href');
                         threadTitleArray[count] = $(rows[i]).find(column2).text().replace(/["',]/g, ""); // Remove chars("',) from string
                         count++;
