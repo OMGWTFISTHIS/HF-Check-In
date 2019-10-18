@@ -2,13 +2,12 @@
 // @name        HF Check-In Watcher
 // @author      +mK
 // @namespace   https://github.com/OMGWTFISTHIS
-// @version     1.0.1
+// @version     1.1.0
 // @description Alerts users of new HF Check-Ins (checks on /usercp.php)
 // @require     https://code.jquery.com/jquery-3.1.1.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js
 // @require     https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.js
-// @match       *://hackforums.net/usercp.php
-// @match       *://hackforums.net/showthread.php?tid=*
+// @match       *://hackforums.net/*
 // @copyright   2016+
 // @updateURL   https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
 // @downloadURL https://github.com/OMGWTFISTHIS/HF-Check-In/raw/master/HF%20Check-In%20Watcher.user.js
@@ -17,6 +16,7 @@
 // @grant       GM_setValue
 // ==/UserScript==
 // ------------------------------ Change Log ----------------------------
+// version 1.1.0: Check-in alert is now generated on any page you visit on Hack Forums, not just UserCP.
 // version 1.0.1: Now checks for updates only once per 15 minutes, to reduce requests to server
 // version 1.0.0: Initial Release
 // ------------------------------ Dev Notes -----------------------------
@@ -44,8 +44,6 @@ if (document.cookie.indexOf("cookieTimer") == -1) {
     if (debug) {
         console.log("This is the first time we've checked in fifteen minutes. Setting cookie.");
     }
-
-    if (window.location.href == "https://hackforums.net/usercp.php") {
         // Cookie variables
         var threadTitles = "";
         var showAlert = true;
@@ -170,7 +168,7 @@ if (document.cookie.indexOf("cookieTimer") == -1) {
             }
         });
     }
-} else {
+else {
     // If cookie exists, wait
     if (debug) {
         console.log("A timer cookie is currently set to limit the amount of requests HF Check-In uses. Waiting until it has expired.")
