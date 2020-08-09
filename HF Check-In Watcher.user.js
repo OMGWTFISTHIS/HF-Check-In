@@ -2,7 +2,7 @@
 // @name        HF Check-In Watcher
 // @author      +mK
 // @namespace   https://github.com/OMGWTFISTHIS
-// @version     1.1.0
+// @version     1.1.1
 // @description Alerts users of new HF Check-Ins (checks on /usercp.php)
 // @require     https://code.jquery.com/jquery-3.1.1.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js
@@ -16,6 +16,7 @@
 // @grant       GM_setValue
 // ==/UserScript==
 // ------------------------------ Change Log ----------------------------
+// version 1.1.1: Fixed Stanley's new and improved UID. Script should now be functioninng again.
 // version 1.1.0: Check-in alert is now generated on any page you visit on Hack Forums, not just UserCP.
 // version 1.0.1: Now checks for updates only once per 15 minutes, to reduce requests to server
 // version 1.0.0: Initial Release
