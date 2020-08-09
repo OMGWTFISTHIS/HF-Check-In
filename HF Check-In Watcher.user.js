@@ -24,7 +24,7 @@
 //
 // ------------------------------ SETTINGS ------------------------------
 // User's threads: Checks what user's threads to watch
-var ThreadsURL = "https://hackforums.net/search.php?action=finduserthreads&uid=3583467";
+var ThreadsURL = "https://hackforums.net/search.php?action=finduserthreads&uid=1337";
 // Filter Title: Filter unread thread results by keyword
 var titleFilterBool = true; // (true = ON, false = OFF)
 var titleFilter = "Check-In"; // seperate keywords by commas ex."PP,BTC"
